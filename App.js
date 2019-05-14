@@ -7,6 +7,11 @@ import HouseholdScreen from './components/Household';
 import AddHouseholdScreen from './components/AddHousehold';
 import AddHouseholdScreenII from './components/AddHouseholdII';
 import AddHouseholdScreenAssets from './components/AddHouseholdAssets';
+import AddPetScreen from './components/AddPet';
+import AddPersonScreen from './components/AddPerson';
+import AddPersonScreenII from './components/AddPersonII';
+import AddPersonScreenSteward from './components/AddPersonSteward';
+
 export default class App extends Component {
   render() {
     return <AppContainer />;
@@ -19,7 +24,11 @@ const AppStackNavigator = createStackNavigator(
 		Household: HouseholdScreen,
 		AddHousehold: AddHouseholdScreen,
 		AddHouseholdII: AddHouseholdScreenII,
-		AddHouseholdAssets: AddHouseholdScreenAssets
+		AddHouseholdAssets: AddHouseholdScreenAssets,
+		AddPet: AddPetScreen,
+		AddPerson: AddPersonScreen,
+		AddPersonII: AddPersonScreenII,
+		AddPersonSteward: AddPersonScreenSteward
 	},
 	{
 		defaultNavigationOptions: {

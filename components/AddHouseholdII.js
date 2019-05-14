@@ -29,9 +29,9 @@ class AddHouseholdScreenII extends Component {
     constructor(props) {
     super(props);
     this.state = {
-      equip: "yes",
-      shelter: "yes",
-      evac: "yes",
+      equip: "1",
+      shelter: "1",
+      evac: "1",
     };
   }
 
@@ -53,9 +53,15 @@ class AddHouseholdScreenII extends Component {
     });
   }
 
+  nextPage(){
+    var addData = this.props.navigation.getParam('addData');
+    addData.equip = this.state.equip; 
+    addData.shelter = this.state.shelter;
+    addData.evac = this.state.evac;
+    this.props.navigation.navigate('AddHouseholdAssets', {addData: addData});
+  }
+
   render() {
-    const name= this.props.navigation.getParam('name');
-    const address= this.props.navigation.getParam('address');
     return (
       <Container style={styles.container}>
         <Content>
@@ -76,13 +82,12 @@ class AddHouseholdScreenII extends Component {
                   selectedValue={this.state.equip}
                   onValueChange={this.setEquip.bind(this)}
                   >
-                  <Picker.Item label="Yes" value="yes" />
-                  <Picker.Item label="No" value="no" />
+                  <Picker.Item label="Yes" value="1" />
+                  <Picker.Item label="No" value="0" />
                 </Picker>
                 </Item>
                 <Item>
                   <Text>{"\n"}Are you willing to take in anyone hurt?{"\n"}</Text>
-                  <Text>{"\n"}{name}, {address}</Text>
                 </Item>
                 <Item>
                 <Picker
@@ -93,12 +98,12 @@ class AddHouseholdScreenII extends Component {
                   selectedValue={this.state.shelter}
                   onValueChange={this.setShelter.bind(this)}
                   >
-                  <Picker.Item label="Yes" value="yes" />
-                  <Picker.Item label="No" value="no" />
+                  <Picker.Item label="Yes" value="1" />
+                  <Picker.Item label="No" value="0" />
                 </Picker>
                 </Item>
                 <Item>
-                  <Text>Would you allow your family to evacuate to your neighbor or team leader?{"\n"}</Text>
+                  <Text>{"\n"}Would you allow your family to evacuate to your neighbor or team leader?{"\n"}</Text>
                 </Item>
                 <Item>
                 <Picker
@@ -109,13 +114,13 @@ class AddHouseholdScreenII extends Component {
                   selectedValue={this.state.evac}
                   onValueChange={this.setEvac.bind(this)}
                   >
-                  <Picker.Item label="Yes" value="yes" />
-                  <Picker.Item label="No" value="no" />
+                  <Picker.Item label="Yes" value="1" />
+                  <Picker.Item label="No" value="0" />
                 </Picker>
                 </Item>
               </Form>
           </Card>
-          <Button block style={styles.button} onPress={()=>this.props.navigation.navigate('AddHouseholdAssets', {name: name, address: address, equip: this.state.equip, shelter: this.state.shelter, evac: this.state.evac })}>
+          <Button block style={styles.button} onPress={()=>this.nextPage()}>
             <Text>Next Step</Text>
           </Button>
         </Content>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Container, H3, Button, Icon, Content, Text, CardItem, Card, Form, Item, Input, Label } from 'native-base';
 import { StyleSheet, Alert } from 'react-native';
+
 import { openDatabase } from 'react-native-sqlite-storage';
 var db = openDatabase({ name: 'UserDatabase.db' });
 
@@ -27,57 +28,25 @@ class AddHouseholdScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user_name: '',
-      user_address: '',
+      address_number: '',
+      address_street: '',
+      address_barangay: '',
+      address_bec: '',
     };
-  }
-
-  addHousehold(){
-    var that = this;
-    const { user_name } = this.state;
-    const { user_address } = this.state;
-
-    if (user_name) {
-      if (user_address) {
-        db.transaction(function(tx) {
-          tx.executeSql(
-            'INSERT INTO household (name, address) VALUES (?,?)',
-            [user_name, user_address],
-            (tx, results) => {
-              console.log('Results', results.rowsAffected);
-              if (results.rowsAffected > 0) {
-                Alert.alert(
-                  'Success',
-                  'Household added',
-                  [
-                    {
-                      text: 'Ok',
-                      onPress: () => that.props.navigation.navigate('AddHouseholdII'),
-                    },
-                  ],
-                  { cancelable: false }
-                );
-              } else {
-                alert('Registration Failed');
-              }
-            }
-          );
-        });
-      }
-
-      else {
-        alert('Input an address');
-      }
-    }
-
-    else {
-      alert('Input name');
-    }
   }
 
   static navigationOptions = {
     title: 'Add Household',
   };
+
+  nextPage(){
+    var addData = new Object();
+    addData.num = this.state.address_number;
+    addData.street = this.state.address_street;
+    addData.bar = this.state.address_barangay;
+    addData.bec = this.state.address_bec;
+    this.props.navigation.navigate('AddHouseholdII', {addData: addData});
+  }
 
   render() {
     return (
@@ -89,16 +58,24 @@ class AddHouseholdScreen extends Component {
             </CardItem>
               <Form>
                 <Item stackedLabel>
-                  <Label>Household's Last Name</Label>
-                  <Input onChangeText = { ( text ) => { this.setState({ user_name: text })} }  />
+                  <Label>House Number</Label>
+                  <Input keyboardType = 'numeric' onChangeText = { ( text ) => { this.setState({ address_number: text })} } />
                 </Item>
                 <Item stackedLabel>
-                  <Label>Address</Label>
-                  <Input onChangeText = { ( text ) => { this.setState({ user_address: text })} } />
+                  <Label>Street</Label>
+                  <Input onChangeText = { ( text ) => { this.setState({ address_street: text })} } />
+                </Item>
+                <Item stackedLabel>
+                  <Label>Barangay</Label>
+                  <Input onChangeText = { ( text ) => { this.setState({ address_barangay: text })} } />
+                </Item>
+                <Item stackedLabel>
+                  <Label>BEC#</Label>
+                  <Input keyboardType = 'numeric' onChangeText = { ( text ) => { this.setState({ address_bec: text })} } />
                 </Item>
               </Form>
           </Card>
-          <Button block style={styles.button} onPress={()=>this.props.navigation.navigate('AddHouseholdII', {name: this.state.user_name, address: this.state.user_address})}>
+          <Button block style={styles.button} onPress={()=>this.nextPage()}>
             <Text>Next</Text>
           </Button>
         </Content>
