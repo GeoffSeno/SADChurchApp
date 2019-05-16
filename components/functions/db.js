@@ -1,5 +1,5 @@
 import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'UserDatabase.db' });
+var db = openDatabase({ name: 'dbMk1.db' });
 var SQLite = require('react-native-sqlite-storage')
 
 export function createDB() {
@@ -12,17 +12,49 @@ export function createDB() {
 	      if (res.rows.length == 0) {
 	        txn.executeSql('DROP TABLE IF EXISTS household_t', []);
 	        txn.executeSql(
-	          'CREATE TABLE IF NOT EXISTS household_t(household_id INTEGER PRIMARY KEY AUTOINCREMENT, household_number INT(10), household_street VARCHAR(50), household_barangay VARCHAR(50), bec_number INT(10), has_medical_equipment INT(1), allow_victims INT(1), allow_evacuation INT(1), date_added DATE)',
+	          'CREATE TABLE IF NOT EXISTS household_t(household_id INTEGER PRIMARY KEY AUTOINCREMENT, household_number INT(10), household_street VARCHAR(50), household_barangay VARCHAR(50), bec_number INT(10), has_medical_equipment VARCHAR(3), allow_victims VARCHAR(3), allow_evacuation VARCHAR(3), date_added DATE)',
 	          []
 	        );
+
 	        txn.executeSql('DROP TABLE IF EXISTS physical_asset_t', []);
 	        txn.executeSql(
 	          'CREATE TABLE IF NOT EXISTS physical_asset_t(asset_id INTEGER PRIMARY KEY AUTOINCREMENT, household_id INT(10), asset_type VARCHAR(20), asset_kind VARCHAR(20))',
 	          []
 	        );
+
 	        txn.executeSql('DROP TABLE IF EXISTS pet_t', []);
 	        txn.executeSql(
 	          'CREATE TABLE IF NOT EXISTS pet_t(pet_id INTEGER PRIMARY KEY AUTOINCREMENT, household_id INT(10), pet_name VARCHAR(20), pet_type VARCHAR(20), is_dangerous VARCHAR(3))',
+	          []
+	        );
+
+	        txn.executeSql('DROP TABLE IF EXISTS person_t', []);
+	        txn.executeSql(
+	          'CREATE TABLE IF NOT EXISTS person_t(person_id INTEGER PRIMARY KEY AUTOINCREMENT, household_id INT(10), first_name VARCHAR(30), middle_name VARCHAR(30), last_name VARCHAR(30), birthday DATE, contact_number INT(11), email VARCHAR(255), religion VARCHAR(20), occupation VARCHAR(30), family_role VARCHAR(20), date_added DATE)',
+	          []
+	        );
+
+	        txn.executeSql('DROP TABLE IF EXISTS donation_t', []);
+	        txn.executeSql(
+	          'CREATE TABLE IF NOT EXISTS donation_t(donation_id INTEGER PRIMARY KEY AUTOINCREMENT, person_id INT(10), amount VARCHAR(30), donation_date DATE, beneficiary VARCHAR(20))',
+	          []
+	        );
+
+	        txn.executeSql('DROP TABLE IF EXISTS volunteer_role_t', []);
+	        txn.executeSql(
+	          'CREATE TABLE IF NOT EXISTS volunteer_role_t(role_id INTEGER PRIMARY KEY AUTOINCREMENT, person_id INT(10), preference VARCHAR(30))',
+	          []
+	        );
+
+	        txn.executeSql('DROP TABLE IF EXISTS volunteer_record_t', []);
+	        txn.executeSql(
+	          'CREATE TABLE IF NOT EXISTS volunteer_record_t(record_id INTEGER PRIMARY KEY AUTOINCREMENT, person_id INT(10), role VARCHAR(20), number_of_hours INT(3), date_effective DATE, program_name VARCHAR(20))',
+	          []
+	        );
+
+	        txn.executeSql('DROP TABLE IF EXISTS skill_t', []);
+	        txn.executeSql(
+	          'CREATE TABLE IF NOT EXISTS skill_t(skill_id INTEGER PRIMARY KEY AUTOINCREMENT, person_id INT(10), skill_name VARCHAR(30))',
 	          []
 	        );
 	      }
@@ -32,7 +64,7 @@ export function createDB() {
 }
 
 export function deleteDB(){
-	SQLite.deleteDatabase({name: 'UserDatabase.db'});
+	SQLite.deleteDatabase({name: 'dbMk1.db'});
 }
 
 export function clearData(){

@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Tue May 14 21:48:36 PHT 2019
+#Wed May 15 13:02:58 PHT 2019
 56.path=lib/armeabi-v7a/libglog.so
 5.base=/Users/geoffreaks/Desktop/SADMobile/android/app/build/intermediates/transforms/mergeJniLibs/debug/0
 42.base=/Users/geoffreaks/Desktop/SADMobile/android/app/build/intermediates/transforms/mergeJniLibs/debug/0

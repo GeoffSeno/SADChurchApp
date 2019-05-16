@@ -7,10 +7,15 @@ import HouseholdScreen from './components/Household';
 import AddHouseholdScreen from './components/AddHousehold';
 import AddHouseholdScreenII from './components/AddHouseholdII';
 import AddHouseholdScreenAssets from './components/AddHouseholdAssets';
+import EditHouseholdScreen from './components/EditHousehold';
+import EditHouseholdAssetsScreen from './components/EditHouseholdAssets';
 import AddPetScreen from './components/AddPet';
 import AddPersonScreen from './components/AddPerson';
 import AddPersonScreenII from './components/AddPersonII';
+import AddPersonScreenQ from './components/AddPersonQ'
 import AddPersonScreenSteward from './components/AddPersonSteward';
+import PersonScreen from './components/Person';
+
 
 export default class App extends Component {
   render() {
@@ -26,9 +31,13 @@ const AppStackNavigator = createStackNavigator(
 		AddHouseholdII: AddHouseholdScreenII,
 		AddHouseholdAssets: AddHouseholdScreenAssets,
 		AddPet: AddPetScreen,
+		EditHousehold: EditHouseholdScreen,
+		EditHouseholdAssets: EditHouseholdAssetsScreen,
 		AddPerson: AddPersonScreen,
 		AddPersonII: AddPersonScreenII,
-		AddPersonSteward: AddPersonScreenSteward
+		AddPersonQ: AddPersonScreenQ,
+		AddPersonSteward: AddPersonScreenSteward,
+		Person: PersonScreen,
 	},
 	{
 		defaultNavigationOptions: {

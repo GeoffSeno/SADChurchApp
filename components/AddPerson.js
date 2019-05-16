@@ -3,7 +3,7 @@ import { Container, H3, Button, Icon, Content, Text, CardItem, Card, Form, Item,
 import { StyleSheet, Alert } from 'react-native';
 
 import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'UserDatabase.db' });
+var db = openDatabase({ name: 'dbMk1.db' });
 
 const styles = StyleSheet.create({
   container: {
@@ -71,17 +71,16 @@ class AddHouseholdScreen extends Component {
 
   nextPage(){
     var addPData =  new Object();
-    addPData.fname = this.state.person_fname;
-    addPData.mname = this.state.person_mname;
-    addPData.lname = this.state.person_lname;   
-    addPData.bday = this.state.person_bday;
-    addPData.sex = this.state.person_sex;
-    addPData.status = this.state.person_status;
-    addPData.number = this.state.person_number;
+    addPData.household_id = this.props.navigation.getParam('h_id');
+    addPData.first_name = this.state.person_fname;
+    addPData.middle_name = this.state.person_mname;
+    addPData.last_name = this.state.person_lname;   
+    addPData.birthday = this.state.person_bday;
+    addPData.contact_number = this.state.person_number;
     addPData.email = this.state.person_email;
     addPData.religion = this.state.person_religion;
     addPData.occupation = this.state.person_occupation;
-    addPData.role = this.state.person_role;
+    addPData.family_role = this.state.person_role;
     this.props.navigation.navigate('AddPersonII', {addPData: addPData});
   }
 
@@ -123,38 +122,6 @@ class AddHouseholdScreen extends Component {
                     onDateChange={this.setDate}
                     disabled={false}
                    />
-                </Item>
-               <Item>
-                  <Text>{"\n"}Sex{"\n"}</Text>
-                </Item>
-                <Item>
-                <Picker
-                  mode="dropdown"
-                  headerStyle={{ backgroundColor: "#16006a" }}
-                  headerBackButtonTextStyle={{ color: "#fff" }}
-                  headerTitleStyle={{ color: "#fff" }}
-                  selectedValue={this.state.person_sex}
-                  onValueChange={this.setSex.bind(this)}
-                  >
-                  <Picker.Item label="Male" value="1" />
-                  <Picker.Item label="Female" value="0" />
-                </Picker>
-                </Item>
-                <Item>
-                  <Text>{"\n"}Civil Status{"\n"}</Text>
-                </Item>
-                <Item>
-                <Picker
-                  mode="dropdown"
-                  headerStyle={{ backgroundColor: "#16006a" }}
-                  headerBackButtonTextStyle={{ color: "#fff" }}
-                  headerTitleStyle={{ color: "#fff" }}
-                  selectedValue={this.state.person_status}
-                  onValueChange={this.setStatus.bind(this)}
-                  >
-                  <Picker.Item label="Single" value="1" />
-                  <Picker.Item label="Married" value="0" />
-                </Picker>
                 </Item>
                 <Item>
                   <Label>Contact Number</Label>

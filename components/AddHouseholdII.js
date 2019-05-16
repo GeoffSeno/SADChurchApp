@@ -29,9 +29,9 @@ class AddHouseholdScreenII extends Component {
     constructor(props) {
     super(props);
     this.state = {
-      equip: "1",
-      shelter: "1",
-      evac: "1",
+      equip: "Yes",
+      shelter: "Yes",
+      evac: "Yes",
     };
   }
 
@@ -82,8 +82,8 @@ class AddHouseholdScreenII extends Component {
                   selectedValue={this.state.equip}
                   onValueChange={this.setEquip.bind(this)}
                   >
-                  <Picker.Item label="Yes" value="1" />
-                  <Picker.Item label="No" value="0" />
+                  <Picker.Item label="Yes" value="Yes" />
+                  <Picker.Item label="No" value="No" />
                 </Picker>
                 </Item>
                 <Item>
@@ -98,8 +98,8 @@ class AddHouseholdScreenII extends Component {
                   selectedValue={this.state.shelter}
                   onValueChange={this.setShelter.bind(this)}
                   >
-                  <Picker.Item label="Yes" value="1" />
-                  <Picker.Item label="No" value="0" />
+                  <Picker.Item label="Yes" value="Yes" />
+                  <Picker.Item label="No" value="No" />
                 </Picker>
                 </Item>
                 <Item>
@@ -114,8 +114,8 @@ class AddHouseholdScreenII extends Component {
                   selectedValue={this.state.evac}
                   onValueChange={this.setEvac.bind(this)}
                   >
-                  <Picker.Item label="Yes" value="1" />
-                  <Picker.Item label="No" value="0" />
+                  <Picker.Item label="Yes" value="Yes" />
+                  <Picker.Item label="No" value="No" />
                 </Picker>
                 </Item>
               </Form>
@@ -128,6 +128,5 @@ class AddHouseholdScreenII extends Component {
     );
   }
 }
-
 
 export default AddHouseholdScreenII;

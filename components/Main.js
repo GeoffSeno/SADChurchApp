@@ -3,11 +3,12 @@ import { Container, Header, Left, Body, Right, Icon, Title, Content, Text, List,
 import { FlatList } from 'react-native';
 import { createDB, deleteDB, clearData, sendData } from './functions/db.js'
 import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'UserDatabase.db' });
+
+var db = openDatabase({ name: 'dbMk1.db' });
 var SQLite = require('react-native-sqlite-storage')
 
 
-class Main extends Component {
+class Main extends Component {  
   static navigationOptions = {
     headerTitle: 'Households'
   };
@@ -15,14 +16,19 @@ class Main extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      active: false,
+      active: 'true',
       FlatListItems: [],
       h_id: 1,
     };
     
     createDB();
+    this.getAllHouseholds();
   }
-  
+
+  componentWillMount() {
+
+  }
+
   getAllHouseholds(){
     db.transaction(tx => {
       tx.executeSql('SELECT * FROM household_t', [], (tx, results) => {
@@ -38,9 +44,7 @@ class Main extends Component {
     });
   }
 
-
   render() {
-    this.getAllHouseholds();
     return (
       <Container>
         <Content>
@@ -60,22 +64,37 @@ class Main extends Component {
           </List>
         </Content>
         <Fab
-          active={this.state.active}
+          active={!this.state.active}
           direction="left"
           containerStyle={{ }}
           style={{ backgroundColor: '#16006a' }}
           position="bottomRight"
           onPress={() => this.setState({ active: !this.state.active })}>
-          <Icon name="list" />
-          <Button style={{ backgroundColor: '#34A34F' }} onPress={() => this.props.navigation.navigate('AddHousehold')}>
+          <Icon name="ios-list" />
+          <Button style={{ backgroundColor: '#5b63ff' }} onPress={() => this.props.navigation.navigate('AddHousehold')}>
             <Icon name="add" />
           </Button>
-          <Button style={{ backgroundColor: '#34A34F' }} onPress={() => sendData()}>
+          <Button style={{ backgroundColor: '#5b63ff' }} onPress={() => sendData()}>
             <Icon name="sync" />
           </Button>
         </Fab>
       </Container>
     );
+  }
+
+  componentDidMount(){
+    this.getAllHouseholds();
+  }
+
+  componentDidUpdate(prevProps) {
+      // Typical usage (don't forget to compare props):
+      if (this.props !== prevProps) {
+        this.getAllHouseholds();
+      }
+    }
+
+  componentWillUnmount() {
+      
   }
 }
 

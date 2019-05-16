@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Container, H3, Button, Icon, Content, Text, CardItem, Card, Form, Item, Input, Label, Picker, ListItem, CheckBox, Body, Left, Right } from 'native-base';
 import { StyleSheet, Alert } from 'react-native';
+import { skillChecker, volunteerChecker } from './functions/addPersonFunctions.js'
 
 import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'UserDatabase.db' });
+var db = openDatabase({ name: 'dbMk1.db' });
 
 const styles = StyleSheet.create({
   container: {
@@ -69,34 +70,77 @@ class AddHouseholdScreen extends Component {
       this._isMounted = false;
   }
 
-  nextPage(){
-    var addPData =  this.props.navigation.getParam('addPData');
-    addPData.Doctor = this.state.itemDoctor;
-    addPData.Nurse = this.state.itemNurse;
-    addPData.CMedic = this.state.itemCMedic;
-    addPData.Psych = this.state.itemPsych;
-    addPData.Vet = this.state.itemVet;
-    addPData.Damage = this.state.itemDamage;
-    addPData.Struc = this.state.itemStruc;
-    addPData.Plumb = this.state.itemPlumb;
-    addPData.Elec = this.state.itemElec;
-    addPData.Fire = this.state.itemFire;
-    addPData.SR = this.state.itemSR;
-    addPData.Secur = this.state.itemSecur;
-    addPData.Comms = this.state.itemComms;
-    addPData.CommsVol = this.state.itemCommsVol;
-    addPData.SRVol = this.state.itemSRVol;
-    addPData.MedicVol = this.state.itemMedicVol;
-    addPData.VTVol = this.state.itemVTVol;
-    addPData.EngVol = this.state.itemEngVol;
-    addPData.SecurVol = this.state.itemSecurVol;
-    addPData.SanitVol = this.state.itemSanitVol;
-    addPData.MessVol = this.state.itemMessVol;
-    addPData.EvacVol = this.state.itemEvacVol;
-    addPData.TSCVol = this.state.itemTSCVol;
-    addPData.RGDVol = this.state.itemRGDVol;
-    addPData.FCVol = this.state.itemFCVol;
-    this.props.navigation.navigate('AddPersonSteward', {addPData: addPData});
+
+
+  submitRest(){
+    var skillData =  new Object();
+    skillData.Doctor = this.state.itemDoctor;
+    skillData.Nurse = this.state.itemNurse;
+    skillData.CMedic = this.state.itemCMedic;
+    skillData.Psych = this.state.itemPsych;
+    skillData.Vet = this.state.itemVet;
+    skillData.Damage = this.state.itemDamage;
+    skillData.Struc = this.state.itemStruc;
+    skillData.Plumb = this.state.itemPlumb;
+    skillData.Elec = this.state.itemElec;
+    skillData.Fire = this.state.itemFire;
+    skillData.SR = this.state.itemSR;
+    skillData.Secur = this.state.itemSecur;
+    skillData.Comms = this.state.itemComms;
+    skillChecker(skillData);
+
+    var volData =  new Object();
+    volData.CommsVol = this.state.itemCommsVol;
+    volData.SRVol = this.state.itemSRVol;
+    volData.MedicVol = this.state.itemMedicVol;
+    volData.VTVol = this.state.itemVTVol;
+    volData.EngVol = this.state.itemEngVol;
+    volData.SecurVol = this.state.itemSecurVol;
+    volData.SanitVol = this.state.itemSanitVol;
+    volData.MessVol = this.state.itemMessVol;
+    volData.EvacVol = this.state.itemEvacVol;
+    volData.TSCVol = this.state.itemTSCVol;
+    volData.RGDVol = this.state.itemRGDVol;
+    volData.FCVol = this.state.itemFCVol;
+    volunteerChecker(volData);
+  }
+
+  //Adds the person to localdb
+  addPerson() {
+    var addPData = this.props.navigation.getParam('addPData');
+    var household_id = addPData['household_id'];
+    var first_name = addPData['first_name'];
+    var middle_name = addPData['middle_name'];
+    var last_name = addPData['last_name'];
+    var birthday = addPData['birthday'];
+    var contact_number = addPData['contact_number'];
+    var email = addPData['email'];
+    var religion = addPData['religion'];
+    var occupation = addPData['occupation'];
+    var family_role = addPData['family_role'];
+    var that = this;
+
+    db.transaction(function(tx) {
+      tx.executeSql(
+        'INSERT INTO person_t (household_id, first_name, middle_name, last_name, birthday, contact_number, email, religion, occupation, family_role, date_added) VALUES (?,?,?,?,?,?,?,?,?,?,date())',
+        [household_id, first_name, middle_name, last_name, birthday, contact_number, email, religion, occupation, family_role],
+        (tx, results) => {
+          console.log('Results', results.rowsAffected);
+          if (results.rowsAffected > 0) {
+            Alert.alert( 'Success', 'Person added!',
+              [
+                {text: 'Ok', onPress: () => that.props.navigation.navigate('AddPersonQ')},
+              ],
+              { cancelable: false }
+            );
+          } else {
+            alert('Registration Failed');
+          }
+        }
+      );
+    });
+
+    this.submitRest();
   }
 
   render() {
@@ -279,7 +323,7 @@ class AddHouseholdScreen extends Component {
               </ListItem>
             </Form>
           </Card>
-          <Button block style={styles.button} onPress={()=>this.nextPage()}>
+          <Button block style={styles.button} onPress={()=>this.addPerson()}>
             <Text>Next</Text>
           </Button>
         </Content>

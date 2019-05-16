@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Container, H3, Button, Icon, Content, Text, CardItem, Card, Form, Item, Input, Label, Picker, ListItem, CheckBox, Body, Separator } from 'native-base';
 import { StyleSheet, Alert } from 'react-native';
 import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'UserDatabase.db' });
+var db = openDatabase({ name: 'dbMk1.db' });
 const styles = StyleSheet.create({
   container: {
     padding: 10,
@@ -136,6 +136,7 @@ class AddHouseholdScreenAssets extends Component {
     const equip = addData['equip'];
     const shelter = addData['shelter'];
     const evac = addData['evac'];
+    var that = this;
 
     db.transaction(function(tx) {
       tx.executeSql(
@@ -144,7 +145,6 @@ class AddHouseholdScreenAssets extends Component {
         (tx, results) => {
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
-
           } else {
             alert('Registration Failed');
           }
@@ -153,7 +153,13 @@ class AddHouseholdScreenAssets extends Component {
     });
 
     this.assetChecker();
-    this.props.navigation.navigate('Home');
+
+    Alert.alert( 'Success', 'Household added!',
+      [
+        {text: 'Ok', onPress: () => that.props.navigation.navigate('Home')},
+      ],
+      { cancelable: false }
+    );
   }
 
   render() {

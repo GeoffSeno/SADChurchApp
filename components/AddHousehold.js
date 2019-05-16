@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { Container, H3, Button, Icon, Content, Text, CardItem, Card, Form, Item, Input, Label } from 'native-base';
 import { StyleSheet, Alert } from 'react-native';
 
-import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'UserDatabase.db' });
-
 const styles = StyleSheet.create({
   container: {
     padding: 10,

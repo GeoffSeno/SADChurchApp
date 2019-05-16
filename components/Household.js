@@ -4,7 +4,7 @@ import { View, FlatList, StyleSheet } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 
 import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'UserDatabase.db' });
+var db = openDatabase({ name: 'dbMk1.db' });
 
 const styles = StyleSheet.create({
   container: {
@@ -18,7 +18,10 @@ const styles = StyleSheet.create({
   },
   header: {
     fontWeight: 'bold',
-    textAlign: 'left',
+    marginLeft: 10
+  },
+  headerH: {
+    fontWeight: 'bold',
   },
   sub: {
     fontSize: 12,
@@ -33,12 +36,16 @@ const styles = StyleSheet.create({
   line: {
     borderBottomColor: 'black',
     borderBottomWidth: 0.5,
+  },
+  button: {
+    margin: 1,
+    marginLeft: 18,
+    marginTop: 10
   }
 
 });
 
 class HouseholdScreen extends Component {
-  _isMounted = false;
   static navigationOptions = {
     title: 'Household',
   };
@@ -46,121 +53,43 @@ class HouseholdScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      active: false,
-      FlatListItems: [],
+      active: 'true',
       Assets: [],
-      Perms: [],
       Pets: [],
+      People: [],
+      Household: "",
     };
+    this.getAll();
   }
 
-  componentWillUnmount() {
-      this._isMounted = false;
-  }
-
-  getAll(){
-    this._isMounted = true;
-    const h_id = this.props.navigation.getParam('h_id');
-
-    db.transaction(tx => {
-      //Get Household Info
-      tx.executeSql('SELECT * FROM household_t WHERE household_id=' + h_id, [], (tx, results) => {
-        var temp = [];
-        var perms = [];
-        for (let i = 0; i < results.rows.length; ++i) {
-          temp.push(results.rows.item(i));
-          if (results.rows.item(i).has_medical_equipment == 1) {
-            perms.push("Medical equipment? Yes");
-          }
-
-          else {
-            perms.push("Medical equipment? No");
-          }
-
-          if (results.rows.item(i).allow_victims == 1) {
-            perms.push("Allow victims to stay? Yes");
-          }
-
-          else {
-            perms.push("Allow victims to stay? No");
-          }
-
-          if (results.rows.item(i).allow_evacuation == 1) {
-            perms.push("Allow evacuation? Yes");
-          }
-
-          else {
-            perms.push("Allow evacuation? No");
-          }
-        }
-        this.setState({
-          FlatListItems: temp,
-          Perms: perms,
-        });
-      });
-
-      //Get Physical Assets
-      tx.executeSql('SELECT * FROM physical_asset_t WHERE household_id=' + h_id, [], (tx, results) => {
-        var temp = [];
-        for (let i = 0; i < results.rows.length; ++i) {
-          temp.push(results.rows.item(i));
-        }
-        this.setState({
-          Assets: temp,
-        });
-      });
-
-      //Get Pets
-      tx.executeSql('SELECT * FROM pet_t WHERE household_id=' + h_id, [], (tx, results) => {
-        var temp = [];
-        for (let i = 0; i < results.rows.length; ++i) {
-          temp.push(results.rows.item(i));
-        }
-        this.setState({
-          Pets: temp,
-        });
-      });
-    });
-
-    this.componentWillUnmount();
+  componentWillMount() {
+    
   }
 
   render() {
     const h_id = this.props.navigation.getParam('h_id');
-    this.getAll();
     return (
       <Container style={styles.container}>
         <Content>
         <Card style={styles.card}>
-          <Row>
+          <Row onPress={() => this.props.navigation.push('EditHousehold', {Household: this.state.Household})}>
             <Col>
             <CardItem>
-              <FlatList
-                data={this.state.FlatListItems}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                    <Body>
-                      <Text style={styles.header}>{item.household_number} {item.household_street}</Text>
-                      <Text style={styles.sub}>{item.household_barangay} BEC# {item.bec_number}</Text>
-                    </Body> 
-                )}
-              />
+            <Body>
+              <Text style={styles.headerH}>{this.state.Household.household_number} {this.state.Household.household_street}</Text>
+              <Text style={styles.sub}>{this.state.Household.household_barangay} BEC# {this.state.Household.bec_number}</Text>
+            </Body> 
             </CardItem>   
             </Col>
             <Col>
-              <FlatList
-                data={this.state.Perms}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                    <Body>
-                      <Text style={styles.perm}>{item}</Text>
-                    </Body>
-                )}
-              />
+              <Body>
+                <Text style={styles.perm}>Medial equipment? {this.state.Household.has_medical_equipment}</Text>
+                <Text style={styles.perm}>Allow victims? {this.state.Household.allow_victims}</Text>
+                <Text style={styles.perm}>Allow evacuation? {this.state.Household.allow_evacuation}</Text>
+              </Body>
             </Col>
           </Row>
           <Row>
-
           </Row>
         </Card>
 
@@ -169,24 +98,18 @@ class HouseholdScreen extends Component {
             <Text style={styles.header}>People</Text>
           </CardItem>
           <List>
-            <ListItem>
-              <Body>
-                <Text>John Mignolet</Text>
-                <Text note numberOfLines={1} style={styles.sub}>Father</Text>
-              </Body>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Jane Mignolet</Text>
-                <Text note numberOfLines={1} style={styles.sub}>Mother</Text>
-              </Body>
-            </ListItem>
-            <ListItem>
-              <Body>
-                <Text>Joe Mignolet</Text>
-                <Text note numberOfLines={1} style={styles.sub}>Child</Text>
-              </Body>
-            </ListItem>
+            <FlatList
+              data={this.state.People}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({ item }) => (
+                <ListItem onPress={()=>this.props.navigation.navigate('Person', {p_id: item.person_id})}>
+                  <Body>
+                    <Text>{item.first_name} {item.last_name}</Text>
+                    <Text note style={styles.sub}>{item.family_role}</Text>
+                  </Body>
+                </ListItem>
+              )}
+            />
           </List>
         </Card>
 
@@ -228,27 +151,96 @@ class HouseholdScreen extends Component {
               )}
             />
           </List>
+          <Button block style={styles.button} onPress={()=>this.props.navigation.navigate('EditHouseholdAssets', {h_id: h_id})}>
+            <Text>Edit Assets</Text>
+          </Button>
         </Card>
           
         <View/><View/><View/>
         </Content>
         <Fab
-          active= {this.state.active}
+          active={!this.state.active}
           direction="left"
           containerStyle={{ }}
           style={{ backgroundColor: '#16006a' }}
           position="bottomRight"
-          onPress={() => this.setState({ active: !this.state.active})}>
-          <Icon name="list" />
-          <Button style={{ backgroundColor: '#34A34F' }} onPress={() => this.props.navigation.navigate('AddPet', {h_id: h_id})}>
-            <Icon name="paw" />
+          onPress={() => this.setState({ active: !this.state.active })}>
+          <Icon name="ios-list" />
+          <Button style={{ backgroundColor: '#5b63ff' }} onPress={() => this.props.navigation.navigate('AddPerson', {h_id: h_id})}>
+            <Icon name="ios-person-add" />
           </Button>
-          <Button style={{ backgroundColor: '#34A34F' }} onPress={() => this.props.navigation.navigate('AddPerson', {h_id: h_id})}>
-            <Icon name="person" />
+          <Button style={{ backgroundColor: '#5b63ff' }} onPress={() => this.props.navigation.navigate('AddPet', {h_id: h_id})}>
+            <Icon name="ios-paw" />
           </Button>
         </Fab>
       </Container>
     );
+  }
+
+  getAll(){
+    const h_id = this.props.navigation.getParam('h_id');
+
+    db.transaction(tx => {
+      //Get Household Info
+      tx.executeSql('SELECT * FROM household_t WHERE household_id=' + h_id, [], (tx, results) => {
+        var perms = [];
+        for (let i = 0; i < results.rows.length; ++i) {
+          this.setState({
+            Household: results.rows.item(0),
+          });
+        }
+      });
+
+      //Get Physical Assets
+      tx.executeSql('SELECT * FROM physical_asset_t WHERE household_id=' + h_id, [], (tx, results) => {
+        var temp = [];
+        for (let i = 0; i < results.rows.length; ++i) {
+          temp.push(results.rows.item(i));
+        }
+        this.setState({
+          Assets: temp,
+        });
+      });
+
+      //Get Pets
+      tx.executeSql('SELECT * FROM pet_t WHERE household_id=' + h_id, [], (tx, results) => {
+        var temp = [];
+        for (let i = 0; i < results.rows.length; ++i) {
+          temp.push(results.rows.item(i));
+        }
+        this.setState({
+          Pets: temp,
+        });
+      });
+
+      //Get People
+      tx.executeSql('SELECT * FROM person_t WHERE household_id=' + h_id, [], (tx, results) => {
+        var temp = [];
+        for (let i = 0; i < results.rows.length; ++i) {
+          temp.push(results.rows.item(i));
+        }
+        this.setState({
+          People: temp,
+        });
+      });
+
+    });
+  }
+
+  componentDidMount(){
+    this.getAll();
+  }
+
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props !== prevProps) {
+      this.getAll();
+    }
+  }
+
+
+  componentWillUnmount() {
+      
   }
 }
 

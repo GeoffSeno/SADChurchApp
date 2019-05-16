@@ -3,7 +3,7 @@ import { Container, H3, Button, Icon, Content, Text, CardItem, Card, Form, Item,
 import { StyleSheet, Alert } from 'react-native';
 
 import { openDatabase } from 'react-native-sqlite-storage';
-var db = openDatabase({ name: 'UserDatabase.db' });
+var db = openDatabase({ name: 'dbMk1.db' });
 
 const styles = StyleSheet.create({
   container: {
@@ -46,18 +46,12 @@ class AddHouseholdScreen extends Component {
     });
   }
 
-  componentWillUnmount() {
-      this._isMounted = false;
-  }
-
-
   addPet() {
-    this._isMounted = true;
-
     var h_id = this.props.navigation.getParam('h_id');
     var name = this.state.pet_name;
     var type = this.state.pet_type;
     var is_dangerous = this.state.is_dangerous;
+    var that = this;
 
     db.transaction(function(tx) {
       tx.executeSql(
@@ -66,7 +60,7 @@ class AddHouseholdScreen extends Component {
         (tx, results) => {
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
-
+            
           } else {
             alert('Registration Failed');
           }
@@ -74,7 +68,12 @@ class AddHouseholdScreen extends Component {
       );
     });
 
-    this.props.navigation.navigate('Home');
+    Alert.alert( 'Success', 'Pet added!',
+      [
+        {text: 'Ok', onPress: () => that.props.navigation.navigate('Home')},
+      ],
+      { cancelable: false }
+    );
   }
 
   render() {
@@ -113,7 +112,7 @@ class AddHouseholdScreen extends Component {
               </Form>
           </Card>
           <Button block style={styles.button} onPress={()=>this.addPet()}>
-            <Text>Next</Text>
+            <Text>Add Pet</Text>
           </Button>
         </Content>
       </Container>
